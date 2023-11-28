@@ -1,11 +1,9 @@
 #------------------------------------------------------------------------
 #                       Import dependancies
 #------------------------------------------------------------------------ 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
 
 #------------------------------------------------------------------------
 #               Configure the database connection URI
@@ -15,14 +13,13 @@ app = Flask(__name__)
 #------------------------------------------------------------------------
 # FORMAT YOUR DATABASE PATH LIKE THIS:  'postgresql://{username}:{password}@{host}:{port}/{database_name}'
 #------------------------------------------------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:{PASSWORDHERE}@localhost:5432/Laureates_DB'                              
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:OIU-8975-%4Hk@localhost:5432/NoblePrize_DB'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #------------------------------------------------------------------------
 #          Create a SQLAlchemy database connection object
 #------------------------------------------------------------------------
 db = SQLAlchemy(app)
-
 
 #========================================================================
 #               Reflect tables to Python classes:
@@ -31,10 +28,10 @@ db = SQLAlchemy(app)
 #------------------------------------------------------------------------
 #                           Laureates Table
 #------------------------------------------------------------------------
-class Laureates(db.Model):
+class Laureate(db.Model):
     __tablename__ = 'Laureates'
     Laureate_id = db.Column(db.Integer, primary_key=True)
-    Org_id = db.Column(db.String(20))
+    Org_Type = db.Column(db.String(20))
     Laureate_Full_Name = db.Column(db.String(100))
     Laureate_Known_Name = db.Column(db.String(100))
     Birth_Date = db.Column(db.Date, default=datetime.utcnow)
@@ -48,9 +45,10 @@ class Laureates(db.Model):
 #------------------------------------------------------------------------
 #                           Awards Table
 #------------------------------------------------------------------------
-class Awards(db.Model):
+class Award(db.Model):
     __tablename__ = 'Awards'
-    Laureate_id = db.Column(db.Integer, primary_key=True)
+    Award_id = db.Column(db.String(6), primary_key=True)
+    Laureate_id = db.Column(db.Integer, db.ForeignKey('Laureates.Laureate_id'))
     Category = db.Column(db.String(30))
     Affiliation_Name = db.Column(db.String)
     Award_year = db.Column(db.Integer)
@@ -64,40 +62,41 @@ class Awards(db.Model):
 #------------------------------------------------------------------------
 #                           Prizes Table
 #------------------------------------------------------------------------
-class Prizes(db.Model):
+class Prize(db.Model):
     __tablename__ = 'Prizes'
-    Laureate_id = db.Column(db.Integer, primary_key=True)
+    Prize_id = db.Column(db.String(6), primary_key=True)
+    Laureate_id = db.Column(db.Integer, db.ForeignKey('Laureates.Laureate_id'))
     Prize_Amount = db.Column(db.Integer)
     Prize_Amount_Adj = db.Column(db.Integer)
-    Sole_Winner = db.Column(db.Boolean)  # Change to Boolean
-    Portion = db.Column(db.String)  # Consider using an appropriate numeric type
-
+    Sole_Winner = db.Column(db.Boolean)
+    Portion = db.Column(db.String(5))
 
 #------------------------------------------------------------------------
 #                           Orgs Table
 #------------------------------------------------------------------------
-class Orgs(db.Model):
+class Org(db.Model):
     __tablename__ = 'Orgs'
-    Laureate_id = db.Column(db.Integer, primary_key=True)
-    Org_id = db.Column(db.String(20))
+    Org_id = db.Column(db.String(6), primary_key=True)
+    Laureate_id = db.Column(db.Integer, db.ForeignKey('Laureates.Laureate_id'))
+    Org_Type = db.Column(db.String(20))
     Organization_Name = db.Column(db.String)
-    Founded_country = db.Column(db.String(20))
-    Org_Founded_Date = db.Column(db.Date, default=datetime.utcnow)
+    Founded_Country = db.Column(db.String(20))
+    Org_Founded_Date = db.Column(db.Date, default=datetime)
+
 
 #========================================================================
 
 
 
-    
+
 #========================================================================
 # Define App Routes
 #========================================================================
+
 @app.route("/")
 def home():
-    print("Server received request for 'Home' page...")
     return (
-        f"Welcome To the Noble Prize Winners API<br/>"
-        f" <br/>"
+        f"Welcome to the Noble Prize Winners API<br/>"
         f"Available Routes:<br/>"
         f"/Laureates<br/>"
         f"/Awards<br/>"
@@ -109,37 +108,41 @@ def home():
 #                       Laureates App route
 #------------------------------------------------------------------------
 @app.route("/Laureates")
-def get_Laureates():
-    laureates = Laureates.query.all()
-    laureates_list = [{'Laureate_id': laureate.Laureate_id,
-                       'Org_id': laureate.Org_id,
-                       'Laureate_Full_Name': laureate.Laureate_Full_Name,
-                       'Laureate_Known_Name': laureate.Laureate_Known_Name,
-                       'Birth_Date': laureate.Birth_Date,
-                       'Birth_City': laureate.Birth_City,
-                       'Birth_Country': laureate.Birth_Country,
-                       'Birth_Lat': laureate.Birth_Lat,
-                       'Birth_Lon': laureate.Birth_Lon,
-                       'Gender': laureate.Gender,
-                       'Age_When_Awarded': laureate.Age_When_Awarded,
-                       } for laureate in laureates]
+def get_laureates():
+    laureates = Laureate.query.all()
+    
+    # Format the Birth_Date before building the JSON response
+    laureates_list = [
+        {
+            'Laureate_id': laureate.Laureate_id,
+            'Org_Type': laureate.Org_Type,
+            'Laureate_Full_Name': laureate.Laureate_Full_Name,
+            'Laureate_Known_Name': laureate.Laureate_Known_Name,
+            'Birth_Date': laureate.Birth_Date.strftime("%m/%d/%Y")if laureate.Birth_Date is not None else None,  # Format the date
+            'Birth_City': laureate.Birth_City,
+            'Birth_Country': laureate.Birth_Country,
+            'Birth_Lat': laureate.Birth_Lat,
+            'Birth_Lon': laureate.Birth_Lon,
+            'Gender': laureate.Gender,
+            'Age_When_Awarded': laureate.Age_When_Awarded,
+        } for laureate in laureates
+    ]
 
     return jsonify({'Laureates': laureates_list})
-
-
 
 #------------------------------------------------------------------------
 #                       Awards App route
 #------------------------------------------------------------------------
 @app.route("/Awards")
 def get_awards():
-    awards_data = Awards.query.all()
-    awards_list = [{'Laureate_id': award.Laureate_id,
+    awards_data = Award.query.all()
+    awards_list = [{'Award_id': award.Award_id,
+                    'Laureate_id': award.Laureate_id,
                     'Category': award.Category,
                     'Affiliation_Name': award.Affiliation_Name,
                     'Award_year': award.Award_year,
                     'Motivation': award.Motivation,
-                    'Date_Awarded': award.Date_Awarded,
+                    'Date_Awarded': award.Date_Awarded.strftime("%m/%d/%Y") if award.Date_Awarded is not None else None,
                     'Award_City': award.Award_City,
                     'Award_Country': award.Award_Country,
                     'Award_Lat': award.Award_Lat,
@@ -148,15 +151,14 @@ def get_awards():
 
     return jsonify({'Awards': awards_list})
 
-
-
 #------------------------------------------------------------------------
 #                       Prizes App route
 #------------------------------------------------------------------------
 @app.route("/Prizes")
 def get_prizes():
-    prizes_data = Prizes.query.all()
-    prizes_list = [{'Laureate_id': prize.Laureate_id,
+    prizes_data = Prize.query.all()
+    prizes_list = [{'Prize_id': prize.Prize_id,
+                    'Laureate_id': prize.Laureate_id,
                     'Prize_Amount': prize.Prize_Amount,
                     'Prize_Amount_Adj': prize.Prize_Amount_Adj,
                     'Sole_Winner': prize.Sole_Winner,
@@ -166,28 +168,29 @@ def get_prizes():
     return jsonify({'Prizes': prizes_list})
 
 
-
 #------------------------------------------------------------------------
 #                       Orgs App route
 #------------------------------------------------------------------------
 @app.route("/Orgs")
 def get_orgs():
-    orgs_data = Orgs.query.all()
-    orgs_list = [{'Laureate_id': org.Laureate_id,
-                  'Org_id': org.Org_id,
+    orgs_data = Org.query.all()
+    orgs_list = [{'Org_id': org.Org_id,
+                  'Laureate_id': org.Laureate_id,
+                  'Org_Type': org.Org_Type,
                   'Organization_Name': org.Organization_Name,
-                  'Founded_country': org.Founded_country,
-                  'Org_Founded_Date': org.Org_Founded_Date,
+                  'Founded_Country': org.Founded_Country,
+                  'Org_Founded_Date': org.Org_Founded_Date.strftime("%m/%d/%Y") if org.Org_Founded_Date is not None else None,
                   } for org in orgs_data]
 
     return jsonify({'Orgs': orgs_list})
+
 #------------------------------------------------------------------------
 #========================================================================
 
 
 
-
-
+#------------------------------------------------------------------------
+# Main block to run the application only if this script is executed directly
 #------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
