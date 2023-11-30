@@ -74,14 +74,19 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
       // Clear existing markers
       markers.clearLayers();
   
-      // Fetch data
-      let response = await fetch('http://127.0.0.1:5000/AllTables');
-      let data = await response.json();
+      // Fetch the data from the SQL Server, if it fails....
+    let remoteData;
+    try {
+      let remoteResponse = await fetch('http://127.0.0.1:5000/AllTables');
+      remoteData = await remoteResponse.json();
+    } catch (remoteError) {
+      console.error('Error fetching remote data. Using local data as fallback:', remoteError);
 
-      // // In case we want to pull from a local source, instead of the API, we can swap to these lines instead of the two above. 
-      // let response = await fetch('./resources/AllTables.JSON');
-      // let data = await response.json();
-  
+      // .... Fetch the loccal backup
+      let localResponse = await fetch('./resources/AllTables.JSON');
+      remoteData = await localResponse.json();
+    }
+
       // Get the selected category from the dropdown
       let selectedCategory = document.getElementById('categoryDropdown').value;
   
@@ -91,7 +96,7 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
       let endDate = moment(dateRange[1], 'MM/DD/YYYY', true);
   
       // Filter data based on the selected category and date range
-      let filteredData = data.LaureatesAndAwards.filter(item => {
+      let filteredData = remoteData.LaureatesAndAwards.filter(item => {
         // Check if Date_Awarded is defined and not null
         if (item.Date_Awarded !== undefined && item.Date_Awarded !== null) {
           // Parse the date
