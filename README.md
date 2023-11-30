@@ -18,7 +18,7 @@ Project Contributors:
 
 - The project team then designed a Flask/SqlAlchemy applet which connected our systems directly to the database.  For some visualizations, the static data was extracted from the SQL server as a JSON file (.resources/AllTables.json).  The interactive map utilizes a Real-Time API pull from the SQL server to feed it, but it has optional lines of code to allow it to pull locally as well.
 
-- The Data Visualizations are presented on a custom dashboard, which displays data and factoids that is also fueled by JavaScript.  There are three separate, interactive visualizations on the page.  At the bottom is a link to our interactive map. 
+- The Data Visualizations are presented on a custom dashboard, which displays a data and factoids section that is also fueled by JavaScript.  There are three separate, interactive visualizations on the page.  At the bottom is a link to our interactive map. 
 
 - Our Fact table shows totals of the prize monies awarded, the university with the most Laureates honored, and the top three countries where Laureates were born.  We also show a count of total laureates, separate them by gender, and determine if the prize was awarded to an organization or not.
 
