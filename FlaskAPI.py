@@ -2,18 +2,21 @@
 #                       Import dependancies
 #------------------------------------------------------------------------ 
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
 
 #------------------------------------------------------------------------
 #               Configure the database connection URI
 #------------------------------------------------------------------------
 app = Flask(__name__)
+CORS(app)
 
 #------------------------------------------------------------------------
 # FORMAT YOUR DATABASE PATH LIKE THIS:  'postgresql://{username}:{password}@{host}:{port}/{database_name}'
 #------------------------------------------------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{password}@{host}:{port}/{database_name}'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:{PASSWORDHERE}@localhost:5432/Laureates_DB'                              
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #------------------------------------------------------------------------
