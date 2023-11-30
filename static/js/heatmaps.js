@@ -1,4 +1,4 @@
-// Wait for the DOM to be ready
+// Slow it down to allow the data to catch up before displaying
 $(document).ready(function () {
   // Define the map with wrap option - set world-wraping
   let map = L.map("map", {
@@ -57,7 +57,6 @@ $(document).ready(function () {
     "opens": "center"
   }, function(start, end, label) {
     console.log('New date range selected: ' + start.format('MM/DD/YYYY') + ' to ' + end.format('MM/DD/YYYY') + ' (predefined range: ' + label + ')');
-    // Fetch and plot data based on the new date range
   fetchDataAndPlot();
 });
 
@@ -65,7 +64,6 @@ $(document).ready(function () {
 $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
   console.log('Apply button clicked. Start Date:', picker.startDate.format('MM/DD/YYYY'));
   console.log('Apply button clicked. End Date:', picker.endDate.format('MM/DD/YYYY'));
-  // Fetch and plot data based on the new date range
   fetchDataAndPlot();
 });
 
@@ -77,23 +75,27 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
       markers.clearLayers();
   
       // Fetch data
-      const response = await fetch('http://127.0.0.1:5000/AllTables');
-      const data = await response.json();
+      let response = await fetch('http://127.0.0.1:5000/AllTables');
+      let data = await response.json();
+
+      // // In case we want to pull from a local source, instead of the API, we can swap to these lines instead of the two above. 
+      // let response = await fetch('./resources/AllTables.JSON');
+      // let data = await response.json();
   
       // Get the selected category from the dropdown
-      const selectedCategory = document.getElementById('categoryDropdown').value;
+      let selectedCategory = document.getElementById('categoryDropdown').value;
   
       // Get the selected date range from the Date Range Picker
-      const dateRange = $('#dateRangePicker').val().split(' - ');
-      const startDate = moment(dateRange[0], 'MM/DD/YYYY', true);
-      const endDate = moment(dateRange[1], 'MM/DD/YYYY', true);
+      let dateRange = $('#dateRangePicker').val().split(' - ');
+      let startDate = moment(dateRange[0], 'MM/DD/YYYY', true);
+      let endDate = moment(dateRange[1], 'MM/DD/YYYY', true);
   
       // Filter data based on the selected category and date range
-      const filteredData = data.LaureatesAndAwards.filter(item => {
+      let filteredData = data.LaureatesAndAwards.filter(item => {
         // Check if Date_Awarded is defined and not null
         if (item.Date_Awarded !== undefined && item.Date_Awarded !== null) {
           // Parse the date
-          const dateAwardedMoment = moment(item.Date_Awarded, 'MM/DD/YYYY', true);
+          let dateAwardedMoment = moment(item.Date_Awarded, 'MM/DD/YYYY', true);
       
           console.log('Start Date:', startDate.format('MM/DD/YYYY'));
           console.log('End Date:', endDate.format('MM/DD/YYYY'));
@@ -101,7 +103,7 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
           
           // Check if the date is valid and falls within the selected range
           if (dateAwardedMoment.isValid()) {
-            const isDateWithinRange = dateAwardedMoment.isSameOrAfter(startDate) && dateAwardedMoment.isSameOrBefore(endDate);
+            let isDateWithinRange = dateAwardedMoment.isSameOrAfter(startDate) && dateAwardedMoment.isSameOrBefore(endDate);
             console.log('Is Date within Range:', isDateWithinRange);
       
             return (
@@ -119,7 +121,7 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
 
       filteredData.forEach(item => {
         console.log('Processing item:', item);
-        const {
+        let {
           Birth_City,
           Birth_Country,
           Birth_Lat,
@@ -128,12 +130,13 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
           Date_Awarded,
           Motivation,
           Laureate_Full_Name,
+          Laureate_id,
         } = item;
 
         // Check if latitude and longitude are present and valid
         if (Birth_Lat !== null && Birth_Lon !== null && !isNaN(Birth_Lat) && !isNaN(Birth_Lon)) {
           // Create a marker for each data point
-          const marker = L.marker([Birth_Lat, Birth_Lon], {
+          let marker = L.marker([Birth_Lat, Birth_Lon], {
             icon: L.divIcon({
               className: 'gold-marker',
               html: '&#129351;', 
@@ -143,19 +146,24 @@ $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
             }),
           });
 
-          const popupContent = `<b>Name:</b> ${Laureate_Full_Name}<br/>
-                                <b>Birthplace:</b> ${Birth_City}, ${Birth_Country}<br/>
-                                <b>Nobel Prize Category:</b> ${Category}<br/>
-                                <b>Reason for Award:</b> ${Motivation}`;
+          // Combine Laureate_id with the URL
+              let externalLink = `https://www.nobelprize.org/laureate/${Laureate_id}`;
+
+              let popupContent = `<b>Name:</b> ${Laureate_Full_Name}<br/>
+                          <b>Birthplace:</b> ${Birth_City}, ${Birth_Country}<br/>
+                          <b>Nobel Prize Category:</b> ${Category}<br/>
+                          <b>Reason for Award:</b> ${Motivation}`;
+    
+          // Add dateAwarded to the popup if available
+              if (Date_Awarded) {
+                popupContent += `<br/><b>Date Awarded:</b> ${Date_Awarded}`;
+              }
+
+          // Add External Link after Date Awarded
+          popupContent += `<br/><a href="${externalLink}" target="_blank">External Link</a>`;
 
           marker.bindPopup(popupContent);
-
-          // Add dateAwarded to the popup if available
-          if (Date_Awarded) {
-            marker.bindPopup(`${popupContent}<br/><b>Date Awarded:</b> ${Date_Awarded}`);
-          }
-
-          markers.addLayer(marker);  // Add the marker to the cluster group
+          markers.addLayer(marker);  
         } else {
           console.error(`Invalid latitude or longitude for ${Laureate_Full_Name}:`, item);
         }
