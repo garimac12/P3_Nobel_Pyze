@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 5%;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #1b2f4e, #8ea8e2);
+  background-size: cover;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.header {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  text-align: center;
+}
+.white-textl{
+  text-align: left;
+  color: white;
+}
+.white-textr{
+  text-align: right;
+  color: white;
+}
+.section {
+  box-sizing: border-box;
+  width: 50%;
+  height: fit-content;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  flex-direction: column;
+  height: fit-content;
+}
+
+#section1 {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+  color: white;
+  padding-bottom: 20px;
+
+}
+
+#section2 {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+  color: white;
+  padding-bottom: 20px;
+
+}
+
+#section3 {
+  order: 3;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  align-items: flex-end;
+  height: fit-content;
+  color: white;
+  padding-bottom: 20px;
+}
+
+#section4 {
+  order: 4;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: flex-start;
+  color: white;
+  padding: 40px;
+}
+
+#section5 {
+  order: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+  color: white;
+  padding-bottom: 20px;
+}
+
+#dashboard {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.summary-section {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding-top: 0px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  max-width: 800px;
+  height: fit-content;
+}
+.dropdown-container {
+  background-color: #212529;
+  text-align: left;
+}
+#charttypes {
+  width: fit-content; 
+  margin-left: auto;
+  margin-right: 20px; 
+}

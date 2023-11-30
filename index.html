@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Nobel Prize Winners 1901-2023</title>
+
+  <!-- Call for Main CSS -->
+  <link rel="stylesheet" type="text/css" href="static/css/style.css">
+
+  <!-- Call for Angel's PreReqs -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- Prereqs -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+  <table style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="text-align: left; padding: 10px; vertical-align: text-top;">
+        <p style="font-weight: bold;color: white;">Project Contributors:<br></p>
+        <ul class="white-textl">
+          Steven Bonillas <a href="github.com/S-Bonillas" style=color:white; target="_blank">(/S-Bonillas)</a></br>
+          Sequoia Boubion-Mckay <a href="github.com/Sequoiabm" style=color:white; target="_blank">(/Sequoiabm)</a></br>
+          Garima Chaudhary <a href="github.com/garimac12" style=color:white; target="_blank">(/garimac12)</a></br>
+          Angel Alcala Ruiz <a href="github.com/dejesusalcala" style=color:white; target="_blank">(/dejesusalcala)</a></br>
+          Rania Shaker <a href="github.com/rshaker101" style=color:white; target="_blank">(/rshaker101)</a></ul>
+      </td>
+      <td style="text-align: top; vertical-align: text-top;">
+        <div id="header" class="header" style="text-align: center; text-align: top; vertical-align: top;">
+          <a href="https://github.com/S-Bonillas/P3_Nobel_Pyze" style="text-decoration: none; color: gold;"target="_blank"><h1 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 300%; margin-bottom: 0;">
+              Nobel Pyze</h1>
+          <h2 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color: white; font-size: 150%; margin-top: 0;">Nobel Prize Laureates from 1901 to 2023</h2>
+        </div>
+      </td>
+      <td style="text-align: right; padding: 10px; vertical-align: text-top;">
+        <p style="font-weight: bold;color: white;">Sources and Citations:<br></p>
+        <ul class="white-textr">
+          <a href="www.nobelprize.org" style=color:white; target="_blank">www.nobelprize.org</a></br>
+          <a href="https://nobelprize.readme.io/reference/getting-started" style=color:white; target="_blank">Nobel Prize API</a></br>
+          <a href="www.openstreetmap.org" style=color:white; target="_blank">www.openstreetmap.org</a></br>
+          <a href="https://leafletjs.com/plugins.html" style=color:white; target="_blank">Leaflet.js</a></br>
+          <a href="https://plotly.com/" style=color:white; target="_blank">plotly.js</a></ul>
+      </td>
+    </tr>
+  </table>
+
+  <div id="section1" class="section" style="background-color: #212529; padding: 20px;">
+    <div class="summary-section" style="background-color: #212529">
+      <h3 style="text-align: center;font-size: 24px; font-weight: bold;color: white;">Totals and Factoids</h3>
+      <span id="totalPrizeAmount" style="font-size: 28px; font-weight: bold;color: gold;"></span><b> : Awarded by the Nobel Committee Since 1901.</b><br>
+      <span id="totalAdjustedPrizeAmount" style="font-size: 28px; font-weight: bold;color: gold"></span><b> : Award Total, Adjusted for Inflation.</b></p>
+      <hr>    
+      <p style="text-align: center;font-size: 18px; font-weight: bold"><b>University with the Most Laureates: </b><br>
+        <span id="mostCommonAffiliation" style="font-size: 24px; font-weight: bold; color: gold; display: block; margin: 0 auto;"></span></p>
+      <p style="text-align: center;font-size: 18px; font-weight: bold"><b>Top Three Countries with the Most Laureates: </b><br>
+        <span id="mostCommonBirthCountry" style="font-size: 24px; font-weight: bold; color: gold; display: block; margin: 0 auto;"></span></p>
+      <hr>    
+      <span id="totalLaureateIds" style="font-size: 24px; font-weight: bold;color: gold;"></span><b> : Total Laureates</b><br>
+      <span id="maleCount" style="font-size: 24px; font-weight: bold;color: gold;"></span><b> : Male Laureates</b><br>
+      <span id="femaleCount" style="font-size: 24px; font-weight: bold;color: gold;"></span><b> : Female Laureates</b><br>
+      <span id="totalNullGenders" style="font-size: 24px; font-weight: bold;color: gold;"></span><b> : Total Organizational Winners</b><br>
+    </div>
+  </div>
+<!-- Importing Angel's Plots -->
+  <div id="section2" class="section" style="background-color: #212529;padding: 20px;">
+    <div class="row">
+      <div class="col-md-12 jumbotron text-center"></div>
+    </div>
+    <div class="container">
+      <h6>Plot by Prize:</h6>
+      <select id="selDataset">
+      <option value="AllPrizeDataset">All Prizes</option>
+      <option value="ChemistryDataset">Chemistry</option>
+      <option value="EconomicDataset">Economics</option>
+      <option value="LiteratureDataset">Literature</option>
+      <option value="MedicineDataset">Medicine</option>
+      <option value="PeaceDataset">Peace</option>
+      <option value="PhysicsDataset">Physics</option>
+      </select>
+    </div>
+    <div id="plot"></div>
+  </div>
+<!-- Importing Garima's Plots -->
+  <div id="section3" class="section" style="background-color: #212529; padding: 20px;">
+    <h6 style="text-align: right">Choose a Plot</h6>
+    <select name="charttype" id="charttype" onchange="updateplot(this.value)">
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+    </select>
+    <div id="plot3"></div>
+  </div>
+
+  <!-- Displaying the Sole Winners Chart -->
+  <div id="section4" class="section" style="background-color: #212529;padding: 20px;">
+    <h6 style="text-align: left">Plot by Portion</h6>
+    <select id="chartType2" name="chartType2">
+        <option value="showAll" selected>Show All</option>
+        <option value="soleWinnerLayout">Sole Winners</option>
+        <option value="distributionLayout">Distribution</option>
+    </select>
+    <div id="chart4"></div>
+  </div>
+
+  <div id="section5" class="section" style="text-align: center; background-color: #212529; padding: 20px">
+    <a href="http://127.0.0.1:5500/heatmaps.html"target="_blank">
+      <h2>Interactive Laureate Map</h2>
+      <img src="static/img/map_pic.png" alt="Link to Heatmap" style="width: 600px; height: 380px; border: 1px solid white;">
+    </a>
+
+  </div>
+
+    
+    <!-- Importing Angel's Scripts -->
+    <script src="/static/js/nobeldata.js"></script>
+    <script src="/static/js/app-AR.js"></script>
+
+    <!-- Importing Garima's Scripts -->
+    <script src="./resources/LaureatesAndAwards.js"></script>
+    <script src="./static/js/GCplots1.js"></script>
+
+    <!-- Importing Script for Sole Chart -->
+    <script type="text/javascript" src="static/js/sole.js"></script>
+
+    <!-- Importing Script for the Dashboard -->
+    <script type="text/javascript" src="static/js/logic.js"></script>
+
+    <!-- Adding a script to keep the heights of the sections the same -->
+    <script>
+      let section2 = document.getElementById('section2');
+      let section1 = document.getElementById('section1');
+      section1.style.height = section2.clientHeight + 'px';
+    </script>
+    <script>
+      let section3 = document.getElementById('section3');
+      let section4 = document.getElementById('section4');
+      section4.style.height = section3.clientHeight + 'px';
+    </script>
+
+
+</body>
+
+</html>

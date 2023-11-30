@@ -1,4 +1,4 @@
-laureate_id,Org_id,Laureate_Full_Name,Laureate_Known_Name,Birth_Date,Birth_City,Birth_Country,Birth_Lat,Birth_Lon,Gender,Age_When_Awarded
+laureate_id,Org_Type,Laureate_Full_Name,Laureate_Known_Name,Birth_Date,Birth_City,Birth_Country,Birth_Lat,Birth_Lon,Gender,Age_When_Awarded
 1026,Human,Pierre Agostini,Pierre Agostini,1941-07-23,Tunis,French protectorate of Tunisia,36.810714,10.181034,male,82.0
 1027,Human,Ferenc Krausz,Ferenc Krausz,1962-05-17,Mór,Hungary,47.371667,18.208611,male,61.0
 1028,Human,Anne L’Huillier,Anne L’Huillier,1958-08-16,Paris,France,48.860093,2.355954,female,65.0
