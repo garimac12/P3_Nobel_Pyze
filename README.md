@@ -35,7 +35,7 @@ Project Contributors:
 **Sources and Methods:**
 - The Nobel Prize Committee (http://www.nobelprize.org)
 - The Nobel Prize API (https://nobelprize.readme.io/reference/getting-started)
-- Open street Maps (http://www.openstreetmap.org)
+- Open Street Maps (http://www.openstreetmap.org)
 - Leaflet (https://leafletjs.com/plugins.html)
 - plotly (https://plotly.com/)
 - SQLAlchemy (https://www.sqlalchemy.org/)
