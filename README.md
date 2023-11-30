@@ -50,6 +50,7 @@ Project Contributors:
 - P3_Nobel_Pyze.ipynb (Jupyter Notebook, containing Python code, which calls the Nobel API, then parses, cleans, and exports the data)
 - FlaskAPI.py (Python program which uses Flask and SQLAlchemy to connect our systems to the SQL server and generates an API which our team called on to feed our data into our final product)
 - .gitignore (Holds back the version of FlaskAPI.py which contains SQL login information)
+- Nobel_Pyze_Presentation.pdf (PDF copy of the slide Deck for the video presentation)
 - LICENSE (MIT license)
 - README.md (The file which you are reading right now)
 
