@@ -16,7 +16,7 @@ Project Contributors:
 
 - The cleaned data was then exported from Jupyter Notebook into the CSVs which made up our SQL tables.  The team developed a  SQL Schema which accepted and sorted the CSVs into a cohesive database. An ERD of the database structure (Nobel_Pyze_ERD.png) as well as a saved copy of our schema (./resources/Nobel_Pyze_Schema.sql) are available in this repository.
 
-- The project team then designed a Flask/SqlAlchemy applet which connected our systems directly to the database.  For some visualizations, the static data was extracted from the SQL server as a JSON file (.resources/AllTables.json).  The interactive map utilizes a Real-Time API pull from the SQL server to feed it, but it has optional lines of code to allow it to pull locally as well.
+- The project team then designed a Flask/SqlAlchemy applet which connected our systems directly to the database.  For some visualizations, the static data was extracted from the SQL server as a JSON file (.resources/AllTables.json).  
 
 - The Data Visualizations are presented on a custom dashboard, which displays a data and factoids section that is also fueled by JavaScript.  There are three separate, interactive visualizations on the page.  At the bottom is a link to our interactive map. 
 
@@ -30,7 +30,7 @@ Project Contributors:
 
 - The interactive map displays the birthplaces of Nobel Laureates across the globe.  The map features custom, clustering markers, that auto-bloom and shrink when zooming in and out. When a marker is clicked, the user is shown the Laureate's name, birthplace, their category, the reason for their award, and the date they received it. The markers also have external links, which if the user clicks on them, they will be taken to a small write-up on the Laureate for more information. 
 
-- The map has filters in place to allow users to filter the types of Laureates they want to view by both their winning category and by the date when their prize was awarded.  The filters work in conjunction, and will allow for filtering by type and time concurrently. For different visual preferences, the map is also capable of changing between the Default View, a Dark Mode, and a Light Mode.  The data is visible in all three versions.
+- The map has filters in place to allow users to filter the types of Laureates they want to view by both their winning category and by the date when their prize was awarded.  The filters work in conjunction, and will allow for filtering by type and time concurrently. For different visual preferences, the map is also capable of changing between the Default View, a Dark Mode, and a Light Mode.  The data is visible in all three versions.  The map is fed by a Real-Time API pull from the SQL server, but if that fails, the map has a failsafe to pull from the local backup in the resources folder.
 
 **Sources and Methods:**
 - The Nobel Prize Committee (http://www.nobelprize.org)
